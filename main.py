@@ -36,12 +36,15 @@ class Monto(InteresSimple):
         super().__init__(capital, tasa_interes, plazo, tipo_plazo, interes, monto)
 
     def calcular_monto(self):
-        self.monto = self.capital + self.interes
-        return self.monto
-
-    def calcular_monto_2(self):
-        self.monto = self.capital(1 + self.tasa_interes * self.plazo)
-        return self.monto
+        if self.interes == 0:
+            interes_cal = Interes(self.capital, self.tasa_interes, self.plazo, self.tipo_plazo, self.interes,
+                                  self.monto)
+            self.interes = interes_cal.calcular_interes()
+            self.monto = self.capital + self.interes
+            return self.monto
+        elif self.interes > 0:
+            self.monto = self.capital + self.interes
+            return self.monto
 
 
 class Capital(InteresSimple):
@@ -75,5 +78,14 @@ class Plazo(InteresSimple):
 #         super().__init__(capital, tasa_interes, plazo, tipo_plazo, interes, monto)
 #         pass
 
+# Calcular interes
 interes_calculado = Interes(10000, 11, 5, "año", 0, 0)  # Creando una instancia
 print(interes_calculado.calcular_interes())  # Llamando al método
+
+# Calcular Monto
+monto_calculado = Monto(10000, 0, 0, "año", 5500, 0)  # Creando una instancia
+print(monto_calculado.calcular_monto())  # Llamando al método
+
+# Calcular Monto 2
+monto_calculado = Monto(10000, 11, 5, "año", 0, 0)  # Creando una instancia
+print(monto_calculado.calcular_monto())  # Llamando al método
