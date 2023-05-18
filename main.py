@@ -24,6 +24,11 @@ class InteresSimple:
         self.tasa_interes = self.tasa_interes / 100
         return self.tasa_interes
 
+    # def equivaler_plazo(self):
+    #     def __init__(self, capital, tasa_interes, plazo, tipo_plazo, interes, monto):
+    #         super().__init__(capital, tasa_interes, plazo, tipo_plazo, interes, monto)
+    #         pass
+
 
 class Interes(InteresSimple):
     def __init__(self, capital, tasa_interes, plazo, tipo_plazo, interes, monto):
@@ -73,11 +78,6 @@ class Plazo(InteresSimple):
         return self.plazo
 
 
-# class EquivalerPlazo(InteresSimple):
-#     def __init__(self, capital, tasa_interes, plazo, tipo_plazo, interes, monto):
-#         super().__init__(capital, tasa_interes, plazo, tipo_plazo, interes, monto)
-#         pass
-
 # Calcular Interes
 print(f"Calcular interes")
 interes_calculado = Interes(10000, 11, 5, "año", 0, 0)  # Creando una instancia
@@ -88,6 +88,12 @@ print()
 print(f"Calcular monto")
 monto_calculado = Monto(10000, 0, 0, "año", 5500, 0)  # Creando una instancia
 print(monto_calculado.calcular_monto())  # Llamando al método
+print()
+
+# Calcular Capital
+print(f"Calcular capital")
+capital_calculado = Capital(0, 11, 5, "año", 5500, 0)
+print(capital_calculado.calcular_capital())
 print()
 
 # Calcular Capital
