@@ -1,7 +1,9 @@
 # Calculadora Financiera
 import tkinter as tk
-import tkinter.messagebox as messagebox
+
 from tkinter import *
+
+import tkinter.messagebox as messagebox
 
 
 # Python 3.11.3
@@ -102,48 +104,31 @@ class VentanaPrincipal:
         # Ejecutar ventana principal
         ventana_principal.mainloop()
 
+    import tkinter.messagebox as messagebox
+
     def calcular(self):
         # Obteniendo los valores de los Entry
         try:
-            self.capital = float(self.input_capital.get()) if self.input_capital.get() != "" else None
-            self.tasa_interes = float(self.input_tasa_interes.get()) if self.input_tasa_interes.get() != "" else None
-            self.plazo = float(self.input_plazo.get()) if self.input_plazo.get() != "" else None
-            self.interes = float(self.input_interes.get()) if self.input_interes.get() != "" else None
-            self.monto = float(self.input_monto.get()) if self.input_monto.get() != "" else None
+            self.capital = float(self.input_capital.get())
+            self.tasa_interes = float(self.input_tasa_interes.get())
+            self.plazo = float(self.input_plazo.get())
         except ValueError:
             messagebox.showerror("Error", "Por favor, asegúrate de que todas las entradas son números.")
             return
 
-        if self.capital is None and self.tasa_interes and self.plazo and self.interes:
-            self.capital = Capital(self.interes / (self.plazo * self.tasa_interes), self.tasa_interes, self.plazo, '',
-                                   self.interes, 0).calcular_capital()
-            self.input_capital.delete(0, 'end')
-            self.input_capital.insert(0, str(self.capital))
-
-        elif self.tasa_interes is None and self.capital and self.plazo and self.interes:
-            self.tasa_interes = TasaInteres(self.capital, self.interes / (self.capital * self.plazo), self.plazo, '',
-                                            self.interes, 0).calcular_tasainteres()
-            self.input_tasa_interes.delete(0, 'end')
-            self.input_tasa_interes.insert(0, str(self.tasa_interes))
-
-        elif self.plazo is None and self.capital and self.tasa_interes and self.interes:
-            self.plazo = Plazo(self.capital, self.tasa_interes, self.interes / (self.capital * self.tasa_interes), '',
-                               self.interes, 0).calcular_plazo()
-            self.input_plazo.delete(0, 'end')
-            self.input_plazo.insert(0, str(self.plazo))
-
-        elif self.interes is None and self.capital and self.tasa_interes and self.plazo:
-            self.interes = Interes(self.capital, self.tasa_interes, self.plazo, '', 0, 0).calcular_interes()
+        # Verificando que las variables necesarias existen y son mayores a cero
+        if self.capital > 0 and self.tasa_interes > 0 and self.plazo > 0:
+            # Calculando Interes
+            self.interes = Interes(self.capital, self.tasa_interes, self.plazo, '', 0, 0)
             self.input_interes.delete(0, 'end')
-            self.input_interes.insert(0, str(self.interes))
+            self.input_interes.insert(0, str(self.interes.calcular_interes()))
 
-        elif self.monto is None and self.capital and self.interes:
-            self.monto = Monto(self.capital, self.tasa_interes, self.plazo, '', self.interes, 0).calcular_monto()
+            # Calculando Monto
+            self.monto = Monto(self.capital, self.tasa_interes, self.plazo, '', self.interes.interes, 0)
             self.input_monto.delete(0, 'end')
-            self.input_monto.insert(0, str(self.monto))
-
+            self.input_monto.insert(0, str(self.monto.calcular_monto()))
         else:
-            messagebox.showerror("Error", "Por favor, asegúrate de que todas las entradas cumplen los requerimientos.")
+            messagebox.showerror("Error", "Por favor, asegúrate de que todas las entradas son números positivos.")
 
 
 # Backend
