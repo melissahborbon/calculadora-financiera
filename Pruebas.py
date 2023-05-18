@@ -3,6 +3,8 @@ import tkinter as tk
 
 from tkinter import *
 
+import tkinter.messagebox as messagebox
+
 
 # Python 3.11.3
 
@@ -102,21 +104,31 @@ class VentanaPrincipal:
         # Ejecutar ventana principal
         ventana_principal.mainloop()
 
+    import tkinter.messagebox as messagebox
+
     def calcular(self):
         # Obteniendo los valores de los Entry
-        self.capital = float(self.input_capital.get())
-        self.tasa_interes = float(self.input_tasa_interes.get())
-        self.plazo = float(self.input_plazo.get())
+        try:
+            self.capital = float(self.input_capital.get())
+            self.tasa_interes = float(self.input_tasa_interes.get())
+            self.plazo = float(self.input_plazo.get())
+        except ValueError:
+            messagebox.showerror("Error", "Por favor, asegúrate de que todas las entradas son números.")
+            return
 
-        # Calculando Interes
-        self.interes = Interes(self.capital, self.tasa_interes, self.plazo, '', 0, 0)
-        self.input_interes.delete(0, 'end')
-        self.input_interes.insert(0, str(self.interes.calcular_interes()))
+        # Verificando que las variables necesarias existen y son mayores a cero
+        if self.capital > 0 and self.tasa_interes > 0 and self.plazo > 0:
+            # Calculando Interes
+            self.interes = Interes(self.capital, self.tasa_interes, self.plazo, '', 0, 0)
+            self.input_interes.delete(0, 'end')
+            self.input_interes.insert(0, str(self.interes.calcular_interes()))
 
-        # Calculando Monto
-        self.monto = Monto(self.capital, self.tasa_interes, self.plazo, '', self.interes.interes, 0)
-        self.input_monto.delete(0, 'end')
-        self.input_monto.insert(0, str(self.monto.calcular_monto()))
+            # Calculando Monto
+            self.monto = Monto(self.capital, self.tasa_interes, self.plazo, '', self.interes.interes, 0)
+            self.input_monto.delete(0, 'end')
+            self.input_monto.insert(0, str(self.monto.calcular_monto()))
+        else:
+            messagebox.showerror("Error", "Por favor, asegúrate de que todas las entradas son números positivos.")
 
 
 # Backend
@@ -195,45 +207,6 @@ class Plazo(InteresSimple):
         self.plazo = self.interes / (self.capital * self.tasa_interes)
         return self.plazo
 
-
-# Introduccion de datos
-
-C = float(input("Introduce el capital inicial"))
-i = float(input("Introduce la tasa de interes"))
-n = float(input("Introduce la cantidad de plazos"))
-tipodeplazo = str(input("Introduce tipo de plazo"))
-I = float(input("Introduce el interes"))
-M = float(input("Introduce el monto"))
-
-# Calcular Interes
-print(f"Calcular interes")
-interes_calculado = Interes(C, i, n, tipodeplazo, I, M)  # Creando una instancia
-print(interes_calculado.calcular_interes())  # Llamando al método
-print()
-
-# Calcular Monto
-print(f"Calcular monto")
-monto_calculado = Monto(C, i, n, tipodeplazo, I, M)  # Creando una instancia
-print(monto_calculado.calcular_monto())  # Llamando al método
-print()
-
-# Calcular Capital
-print(f"Calcular capital")
-capital_calculado = Capital(C, i, n, tipodeplazo, I, M)
-print(capital_calculado.calcular_capital())
-print()
-
-# Calcular Tasa de interes
-print(f"Calcular tasa de interes")
-tasa_interes_calculada = TasaInteres(C, i, n, tipodeplazo, I, M)
-print(tasa_interes_calculada.calcular_tasainteres())
-print()
-
-# Calcular Plazo
-print(f"Calcular plazo")
-plazo_calculado = Plazo(C, i, n, tipodeplazo, I, M)
-print(plazo_calculado.calcular_plazo())
-print()
 
 if __name__ == "__main__":
     ventana = VentanaPrincipal()
