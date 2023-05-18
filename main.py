@@ -3,25 +3,25 @@ import tkinter as tk
 
 from tkinter import *
 
+import tkinter.messagebox as messagebox
+
 
 # Python 3.11.3
 
 # Front End
 class VentanaPrincipal:
     def __init__(self):
+        self.capital = None
+        self.tasa_interes = None
+        self.plazo = None
+        self.interes = None
+        self.monto = None
+
         # Creacion de ventana principal
         self.ventana_principal = ventana_principal = tk.Tk()
         self.ventana_principal.title(" ♡ Calculadora Financiera ♡ ")
-
-        # Icono ventana principal
-        ventana_principal.iconbitmap("fresa.ico")
-        # Icono de https://www.flaticon.es/iconos-gratis/fresa
-
-        # Personalizar tamaño de la ventana principal (descomentar ya que este terminado)
-        # ventana_principal.resizable(False,False)
-
-        # Forma del cursor ventana principal, color del fondo
-        ventana_principal.config(cursor="heart", bg="pink")
+        self.ventana_principal.iconbitmap("fresa.ico")
+        self.ventana_principal.config(cursor="heart", bg="pink")
 
         # Titulo ventana principal
         titulo_ventana_principal = Label(ventana_principal,
@@ -82,59 +82,53 @@ class VentanaPrincipal:
                             sticky="ew")
 
         # Input de variables
-        input_capital = Entry(ventana_principal,
-                              highlightthickness=4,
-                              highlightcolor="pink")
-        input_capital.grid(row=1,
-                           column=1,
-                           padx=5,
-                           pady=5,
-                           sticky="ew")
+        self.input_capital = Entry(ventana_principal, highlightthickness=4, highlightcolor="pink")
+        self.input_capital.grid(row=1, column=1, padx=5, pady=5, sticky="ew")
 
-        input_tasa_interes = Entry(ventana_principal,
-                                   highlightthickness=4,
-                                   highlightcolor="pink")
-        input_tasa_interes.grid(row=2,
-                                column=1,
-                                padx=5,
-                                pady=5,
-                                sticky="ew")
+        self.input_tasa_interes = Entry(ventana_principal, highlightthickness=4, highlightcolor="pink")
+        self.input_tasa_interes.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
 
-        input_plazo = Entry(ventana_principal,
-                            highlightthickness=4,
-                            highlightcolor="pink")
-        input_plazo.grid(row=3,
-                         column=1,
-                         padx=5,
-                         pady=5,
-                         sticky="ew")
+        self.input_plazo = Entry(ventana_principal, highlightthickness=4, highlightcolor="pink")
+        self.input_plazo.grid(row=3, column=1, padx=5, pady=5, sticky="ew")
 
-        input_interes = Entry(ventana_principal,
-                              highlightthickness=4,
-                              highlightcolor="pink")
-        input_interes.grid(row=1,
-                           column=4,
-                           padx=5,
-                           pady=5,
-                           sticky="ew")
+        self.input_interes = Entry(ventana_principal, highlightthickness=4, highlightcolor="pink")
+        self.input_interes.grid(row=1, column=4, padx=5, pady=5, sticky="ew")
 
-        input_monto = Entry(ventana_principal,
-                            highlightthickness=4,
-                            highlightcolor="pink")
-        input_monto.grid(row=2,
-                         column=4,
-                         padx=5,
-                         pady=5,
-                         sticky="ew")
+        self.input_monto = Entry(ventana_principal, highlightthickness=4, highlightcolor="pink")
+        self.input_monto.grid(row=2, column=4, padx=5, pady=5, sticky="ew")
+
         # Botbon calcular
-        boton_calcular = Button(ventana_principal, text="Calcular", command=InteresSimple.calcular_interes(self))
-        boton_calcular.grid(row=5,
-                            column=1,
-                            padx=5,
-                            pady=5)
+        boton_calcular = Button(ventana_principal, text="Calcular", command=self.calcular)
+        boton_calcular.grid(row=5, column=1, padx=5, pady=5)
 
         # Ejecutar ventana principal
         ventana_principal.mainloop()
+
+    import tkinter.messagebox as messagebox
+
+    def calcular(self):
+        # Obteniendo los valores de los Entry
+        try:
+            self.capital = float(self.input_capital.get())
+            self.tasa_interes = float(self.input_tasa_interes.get())
+            self.plazo = float(self.input_plazo.get())
+        except ValueError:
+            messagebox.showerror("Error", "Por favor, asegúrate de que todas las entradas son números.")
+            return
+
+        # Verificando que las variables necesarias existen y son mayores a cero
+        if self.capital > 0 and self.tasa_interes > 0 and self.plazo > 0:
+            # Calculando Interes
+            self.interes = Interes(self.capital, self.tasa_interes, self.plazo, '', 0, 0)
+            self.input_interes.delete(0, 'end')
+            self.input_interes.insert(0, str(self.interes.calcular_interes()))
+
+            # Calculando Monto
+            self.monto = Monto(self.capital, self.tasa_interes, self.plazo, '', self.interes.interes, 0)
+            self.input_monto.delete(0, 'end')
+            self.input_monto.insert(0, str(self.monto.calcular_monto()))
+        else:
+            messagebox.showerror("Error", "Por favor, asegúrate de que todas las entradas son números positivos.")
 
 
 # Backend
@@ -214,41 +208,5 @@ class Plazo(InteresSimple):
         return self.plazo
 
 
-# Introduccion de datos
-
-C = float(input("Introduce el capital inicial"))
-i = float(input("Introduce la tasa de interes"))
-n = float(input("Introduce la cantidad de plazos"))
-tipodeplazo = str(input("Introduce tipo de plazo"))
-I = float(input("Introduce el interes"))
-M = float(input("Introduce el monto"))
-
-# Calcular Interes
-print(f"Calcular interes")
-interes_calculado = Interes(C, i, n, tipodeplazo, I, M)  # Creando una instancia
-print(interes_calculado.calcular_interes())  # Llamando al método
-print()
-
-# Calcular Monto
-print(f"Calcular monto")
-monto_calculado = Monto(C, i, n, tipodeplazo, I, M)  # Creando una instancia
-print(monto_calculado.calcular_monto())  # Llamando al método
-print()
-
-# Calcular Capital
-print(f"Calcular capital")
-capital_calculado = Capital(C, i, n, tipodeplazo, I, M)
-print(capital_calculado.calcular_capital())
-print()
-
-# Calcular Tasa de interes
-print(f"Calcular tasa de interes")
-tasa_interes_calculada = TasaInteres(C, i, n, tipodeplazo, I, M)
-print(tasa_interes_calculada.calcular_tasainteres())
-print()
-
-# Calcular Plazo
-print(f"Calcular plazo")
-plazo_calculado = Plazo(C, i, n, tipodeplazo, I, M)
-print(plazo_calculado.calcular_plazo())
-print()
+if __name__ == "__main__":
+    ventana = VentanaPrincipal()
