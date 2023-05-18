@@ -65,6 +65,7 @@ class TasaInteres(InteresSimple):
 
     def calcular_tasainteres(self):
         self.tasa_interes = (self.interes / self.capital) / self.plazo
+        self.tasa_interes = round(self.tasa_interes, 3)  # Redondear a 2 decimales
         return self.tasa_interes
 
 
@@ -78,26 +79,41 @@ class Plazo(InteresSimple):
         return self.plazo
 
 
+# Introduccion de datos
+
+C = float(input("Introduce el capital inicial"))
+i = float(input("Introduce la tasa de interes"))
+n = float(input("Introduce la cantidad de plazos"))
+tipodeplazo = str(input("Introduce tipo de plazo"))
+I = float(input("Introduce el interes"))
+M = float(input("Introduce el monto"))
+
 # Calcular Interes
 print(f"Calcular interes")
-interes_calculado = Interes(10000, 11, 5, "año", 0, 0)  # Creando una instancia
+interes_calculado = Interes(C, i, n, tipodeplazo, I, M)  # Creando una instancia
 print(interes_calculado.calcular_interes())  # Llamando al método
 print()
 
 # Calcular Monto
 print(f"Calcular monto")
-monto_calculado = Monto(10000, 0, 0, "año", 5500, 0)  # Creando una instancia
+monto_calculado = Monto(C, i, n, tipodeplazo, I, M)  # Creando una instancia
 print(monto_calculado.calcular_monto())  # Llamando al método
 print()
 
 # Calcular Capital
 print(f"Calcular capital")
-capital_calculado = Capital(0, 11, 5, "año", 5500, 0)
+capital_calculado = Capital(C, i, n, tipodeplazo, I, M)
 print(capital_calculado.calcular_capital())
 print()
 
-# Calcular Capital
-print(f"Calcular capital")
-capital_calculado = Capital(0, 11, 5, "año", 5500, 0)
-print(capital_calculado.calcular_capital())
+# Calcular Tasa de interes
+print(f"Calcular tasa de interes")
+tasa_interes_calculada = TasaInteres(C, i, n, tipodeplazo, I, M)
+print(tasa_interes_calculada.calcular_tasainteres())
+print()
+
+# Calcular Plazo
+print(f"Calcular plazo")
+plazo_calculado = Plazo(C, i, n, tipodeplazo, I, M)
+print(plazo_calculado.calcular_plazo())
 print()
