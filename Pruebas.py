@@ -1,14 +1,23 @@
 # Calculadora Financiera
 import tkinter as tk
-
-from tkinter import *
-
 import tkinter.messagebox as messagebox
+from tkinter import *
+from tkinter import ttk
 
 
 # Python 3.11.3
 
 # Front End
+
+# Obtener el input numerico
+def get_numeric_input(input_entry):
+    value = input_entry.get()
+    try:
+        return float(value)
+    except ValueError:
+        return None
+
+
 class VentanaPrincipal:
     def __init__(self):
         self.capital = None
@@ -32,14 +41,20 @@ class VentanaPrincipal:
                                       padx=20,
                                       pady=20)
 
-        # Boton seleccion tema/formula (Aun no es un boton pero despues quiero cambiarlo)
-        boton_seleccion_formula = Button(ventana_principal,
-                                         text="Interes Simple")
+        # Crear un Label en lugar de un botón
+        etiqueta_seleccion_formula = Label(ventana_principal,
+                                           text="Interes Simple")
+        etiqueta_seleccion_formula.grid(row=0,
+                                        column=1,
+                                        padx=20,
+                                        pady=20)
 
-        boton_seleccion_formula.grid(row=0,
-                                     column=1,
-                                     padx=20,
-                                     pady=20)
+        # Crear Combobox para seleccionar la variable a calcular
+        self.seleccion_variable = ttk.Combobox(self.ventana_principal, state="readonly")
+        self.seleccion_variable['values'] = ['Capital', 'Tasa de Interes', 'Plazo', 'Interes', 'Monto']
+        self.seleccion_variable.current(0)  # Configura 'Capital' como la opción por defecto
+        self.seleccion_variable.grid(row=4, column=1, padx=5, pady=5)
+
         # Labels para las variables
         variable_capital = Label(ventana_principal,
                                  text="Capital")
@@ -82,54 +97,98 @@ class VentanaPrincipal:
                             sticky="ew")
 
         # Input de variables
-        self.input_capital = Entry(ventana_principal, highlightthickness=4, highlightcolor="pink")
+        self.input_capital = Entry(self.ventana_principal, highlightthickness=4, highlightcolor="pink")
         self.input_capital.grid(row=1, column=1, padx=5, pady=5, sticky="ew")
+        self.input_capital.insert(0, "0")  # Valor por defecto
 
-        self.input_tasa_interes = Entry(ventana_principal, highlightthickness=4, highlightcolor="pink")
+        self.input_tasa_interes = Entry(self.ventana_principal, highlightthickness=4, highlightcolor="pink")
         self.input_tasa_interes.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
+        self.input_tasa_interes.insert(0, "0")  # Valor por defecto
 
-        self.input_plazo = Entry(ventana_principal, highlightthickness=4, highlightcolor="pink")
+        self.input_plazo = Entry(self.ventana_principal, highlightthickness=4, highlightcolor="pink")
         self.input_plazo.grid(row=3, column=1, padx=5, pady=5, sticky="ew")
+        self.input_plazo.insert(0, "0")  # Valor por defecto
 
-        self.input_interes = Entry(ventana_principal, highlightthickness=4, highlightcolor="pink")
+        self.input_interes = Entry(self.ventana_principal, highlightthickness=4, highlightcolor="pink")
         self.input_interes.grid(row=1, column=4, padx=5, pady=5, sticky="ew")
+        self.input_interes.insert(0, "0")  # Valor por defecto
 
-        self.input_monto = Entry(ventana_principal, highlightthickness=4, highlightcolor="pink")
+        self.input_monto = Entry(self.ventana_principal, highlightthickness=4, highlightcolor="pink")
         self.input_monto.grid(row=2, column=4, padx=5, pady=5, sticky="ew")
+        self.input_monto.insert(0, "0")  # Valor por defecto
 
-        # Botbon calcular
-        boton_calcular = Button(ventana_principal, text="Calcular", command=self.calcular)
-        boton_calcular.grid(row=5, column=1, padx=5, pady=5)
-
-        # Ejecutar ventana principal
-        ventana_principal.mainloop()
-
-    import tkinter.messagebox as messagebox
+        # Boton de calcular
+        boton_calcular = Button(ventana_principal,
+                                text="Calcular",
+                                command=self.calcular)
+        boton_calcular.grid(row=4,
+                            column=0,
+                            padx=5,
+                            pady=5)
 
     def calcular(self):
-        # Obteniendo los valores de los Entry
-        try:
-            self.capital = float(self.input_capital.get())
-            self.tasa_interes = float(self.input_tasa_interes.get())
-            self.plazo = float(self.input_plazo.get())
-        except ValueError:
-            messagebox.showerror("Error", "Por favor, asegúrate de que todas las entradas son números.")
+        # Obtener los valores de entrada
+        capital = get_numeric_input(self.input_capital)
+        tasa_interes = get_numeric_input(self.input_tasa_interes)
+        plazo = get_numeric_input(self.input_plazo)
+        interes = get_numeric_input(self.input_interes)
+        monto = get_numeric_input(self.input_monto)
+
+        # Verificar si todos los valores son numéricos
+        if None in (capital, tasa_interes, plazo, interes, monto):
+            messagebox.showerror("Error", "Por favor introduzca solo números.")
             return
 
-        # Verificando que las variables necesarias existen y son mayores a cero
-        if self.capital > 0 and self.tasa_interes > 0 and self.plazo > 0:
-            # Calculando Interes
-            self.interes = Interes(self.capital, self.tasa_interes, self.plazo, '', 0, 0)
-            self.input_interes.delete(0, 'end')
-            self.input_interes.insert(0, str(self.interes.calcular_interes()))
+        # Crear instancias de las clases con los valores de entrada
+        capital_obj = Capital(capital, tasa_interes, plazo, 'Años', interes, monto)
+        tasa_interes_obj = TasaInteres(capital, tasa_interes, plazo, 'Años', interes, monto)
+        plazo_obj = Plazo(capital, tasa_interes, plazo, 'Años', interes, monto)
+        interes_obj = Interes(capital, tasa_interes, plazo, 'Años', interes, monto)
+        monto_obj = Monto(capital, tasa_interes, plazo, 'Años', interes, monto)
 
-            # Calculando Monto
-            self.monto = Monto(self.capital, self.tasa_interes, self.plazo, '', self.interes.interes, 0)
-            self.input_monto.delete(0, 'end')
-            self.input_monto.insert(0, str(self.monto.calcular_monto()))
+        # Obtener la selección del botón desplegable
+        seleccion = self.seleccion_variable.get()
+
+        # Dependiendo de la selección, llamar al método correspondiente para calcular la variable seleccionada
+        if seleccion == 'Capital':
+            # Calcular el capital
+            result = capital_obj.calcular_capital()
+        elif seleccion == 'Tasa de Interes':
+            # Calcular la tasa de interes
+            result = tasa_interes_obj.calcular_tasainteres()
+            result = result * 100
+        elif seleccion == 'Plazo':
+            # Calcular el plazo
+            result = plazo_obj.calcular_plazo()
+        elif seleccion == 'Interes':
+            # Calcular el interes
+            result = interes_obj.calcular_interes()
+        elif seleccion == 'Monto':
+            # Calcular el monto
+            result = monto_obj.calcular_monto()
         else:
-            messagebox.showerror("Error", "Por favor, asegúrate de que todas las entradas son números positivos.")
+            messagebox.showerror("Error", "Selección no válida.")
+            return
 
+        # Actualizar la entrada con el resultado
+        if seleccion == 'Capital':
+            self.input_capital.delete(0, END)
+            self.input_capital.insert(0, str(result))
+        elif seleccion == 'Tasa de Interes':
+            self.input_tasa_interes.delete(0, END)
+            self.input_tasa_interes.insert(0, str(result))
+        elif seleccion == 'Plazo':
+            self.input_plazo.delete(0, END)
+            self.input_plazo.insert(0, str(result))
+        elif seleccion == 'Interes':
+            self.input_interes.delete(0, END)
+            self.input_interes.insert(0, str(result))
+        elif seleccion == 'Monto':
+            self.input_monto.delete(0, END)
+            self.input_monto.insert(0, str(result))
+
+    def iniciar(self):
+        self.ventana_principal.mainloop()
 
 # Backend
 
@@ -210,3 +269,4 @@ class Plazo(InteresSimple):
 
 if __name__ == "__main__":
     ventana = VentanaPrincipal()
+    ventana.iniciar()
