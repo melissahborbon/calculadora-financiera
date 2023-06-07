@@ -3,6 +3,7 @@ import tkinter as tk
 import tkinter.messagebox as messagebox
 from tkinter import *
 from tkinter import ttk
+from PIL import Image, ImageTk
 
 
 # Python 3.11.3
@@ -126,6 +127,13 @@ class VentanaPrincipal:
                             padx=5,
                             pady=5)
 
+        self.img = Image.open("crecimiento.png").resize((100, 100))
+        self.img = ImageTk.PhotoImage(self.img)
+
+        label_img = Label(ventana_principal,image=self.img)
+        label_img.config(width=100, height=100)
+        label_img.grid(row=4, column=4, padx=0, pady=10, sticky="nw")
+
     def calcular(self):
         # Obtener los valores de entrada
         capital = get_numeric_input(self.input_capital)
@@ -189,6 +197,7 @@ class VentanaPrincipal:
 
     def iniciar(self):
         self.ventana_principal.mainloop()
+
 
 # Backend
 
@@ -267,6 +276,42 @@ class Plazo(InteresSimple):
         return self.plazo
 
 
+class VentanaInflacion:
+    def __init__(self):
+        self.valor_inflacion = None
+
+        # Creación de la ventana de inflación
+        self.ventana_inflacion = tk.Tk()
+        self.ventana_inflacion.title("Inflación")
+        self.ventana_inflacion.iconbitmap("fresa.ico")
+        self.ventana_inflacion.config(cursor="heart", bg="pink")
+
+        etiqueta_inflacion = Label(self.ventana_inflacion, text="Porcentaje de Inflación:")
+        etiqueta_inflacion.grid(row=0, column=0, padx=20, pady=20)
+
+        self.input_inflacion = Entry(self.ventana_inflacion, highlightthickness=4, highlightcolor="pink")
+        self.input_inflacion.grid(row=0, column=1, padx=5, pady=5)
+
+        boton_confirmar = Button(self.ventana_inflacion, text="Confirmar", command=self.obtener_inflacion)
+        boton_confirmar.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
+
+    def obtener_inflacion(self):
+        valor = get_numeric_input(self.input_inflacion)
+        if valor is not None:
+            self.valor_inflacion = valor
+            self.ventana_inflacion.destroy()
+        else:
+            messagebox.showerror("Error", "Por favor ingrese un valor numérico.")
+
+    def iniciar(self):
+        self.ventana_inflacion.mainloop()
+
+
 if __name__ == "__main__":
-    ventana = VentanaPrincipal()
-    ventana.iniciar()
+    ventana_inflacion = VentanaInflacion()
+    ventana_inflacion.iniciar()
+
+    # Verificar si se ingresó un valor de inflación válido
+    if ventana_inflacion.valor_inflacion is not None:
+        ventana_principal = VentanaPrincipal()
+        ventana_principal.iniciar()

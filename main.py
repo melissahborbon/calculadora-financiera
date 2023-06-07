@@ -3,6 +3,7 @@ import tkinter as tk
 import tkinter.messagebox as messagebox
 from tkinter import *
 from tkinter import ttk
+from PIL import Image, ImageTk
 
 
 # Python 3.11.3
@@ -125,6 +126,13 @@ class VentanaPrincipal:
                             column=0,
                             padx=5,
                             pady=5)
+
+        self.img = Image.open("crecimiento.png").resize((100, 100))
+        self.img = ImageTk.PhotoImage(self.img)
+
+        label_img = Label(ventana_principal,image=self.img)
+        label_img.config(width=100, height=100)
+        label_img.grid(row=4, column=4, padx=0, pady=10, sticky="nw")
 
     def calcular(self):
         # Obtener los valores de entrada
