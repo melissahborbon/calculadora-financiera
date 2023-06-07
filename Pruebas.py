@@ -130,7 +130,7 @@ class VentanaPrincipal:
         self.img = Image.open("crecimiento.png").resize((100, 100))
         self.img = ImageTk.PhotoImage(self.img)
 
-        label_img = Label(ventana_principal,image=self.img)
+        label_img = Label(ventana_principal, image=self.img)
         label_img.config(width=100, height=100)
         label_img.grid(row=4, column=4, padx=0, pady=10, sticky="nw")
 
@@ -146,6 +146,15 @@ class VentanaPrincipal:
         if None in (capital, tasa_interes, plazo, interes, monto):
             messagebox.showerror("Error", "Por favor introduzca solo números.")
             return
+
+        # Compare inflation rate and interest rate
+        inflacion = ventana_inflacion.valor_inflacion
+        if inflacion > tasa_interes:
+            messagebox.showinfo("Comparación", "La tasa de interés es menor a la tasa de inflación. :C")
+        elif inflacion == tasa_interes:
+            messagebox.showinfo("Comparación", "La tasa de interés es igual a la tasa de inflación. :3")
+        elif inflacion < tasa_interes:
+            messagebox.showinfo("Comparación", "La tasa de interés es mayor a la tasa de inflación. :D")
 
         # Crear instancias de las clases con los valores de entrada
         capital_obj = Capital(capital, tasa_interes, plazo, 'Años', interes, monto)
